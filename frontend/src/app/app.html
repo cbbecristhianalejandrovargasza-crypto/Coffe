@@ -1,0 +1,151 @@
+<header class="barra">
+  <a class="marca" href="#inicio">{{ cafeteria()?.nombre }}</a>
+  <nav aria-label="Navegación principal">
+    <a href="#inicio">Inicio</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#especialidades">Especialidades</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#precios">Precios</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main>
+  <section id="inicio" class="portada">
+    @if (portada(); as medio) {
+      <video
+        #video
+        [src]="medio.url"
+        [muted]="true"
+        [autoplay]="reproducirAuto"
+        [attr.poster]="medio.poster"
+        loop
+        playsinline
+        preload="metadata"
+        (play)="videoEnMarcha.set(true)"
+        (pause)="videoEnMarcha.set(false)"
+        aria-hidden="true">
+      </video>
+
+      <div class="portada-contenido">
+        <p class="ubicacion">{{ cafeteria()?.ciudad }}</p>
+        <h1>{{ medio.titulo }}</h1>
+        <p>{{ medio.descripcion }}</p>
+        <a class="boton" href="#precios">Ver menú</a>
+      </div>
+
+      <button class="control-video" type="button" (click)="alternarVideo(video)">
+        {{ videoEnMarcha() ? 'Pausar video' : 'Reproducir video' }}
+      </button>
+    } @else {
+      <div class="portada-contenido">
+        <h1>{{ cafeteria()?.nombre }}</h1>
+        <a class="boton" href="#precios">Ver menú</a>
+      </div>
+    }
+  </section>
+
+  @if (errores().length) {
+    <p class="aviso" role="alert">{{ errores().join(' ') }}</p>
+  }
+
+  <section class="bloque" id="servicios">
+    <h2>Servicios</h2>
+    <div class="rejilla">
+      @for (servicio of servicios(); track servicio.id) {
+        <article class="tarjeta">
+          <h3>{{ servicio.nombre }}</h3>
+          <p>{{ servicio.descripcion }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="bloque" id="especialidades">
+    <h2>Especialidades</h2>
+    <div class="rejilla">
+      @for (producto of especialidades(); track producto.id) {
+        <article class="tarjeta">
+          <h3>{{ producto.nombre }}</h3>
+          <p>{{ producto.descripcion }}</p>
+          <strong class="precio">Bs {{ producto.precio }}</strong>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="bloque" id="nosotros">
+    <h2>Nosotros</h2>
+    @if (cafeteria(); as datos) {
+      <p>{{ datos.historia }}</p>
+      <p><strong>Dirección</strong> {{ datos.direccion }}, {{ datos.ciudad }}</p>
+      <p><strong>Horario</strong> {{ datos.horario }}</p>
+      <p><strong>Teléfono</strong> {{ datos.telefono || 'Por confirmar' }}</p>
+    }
+
+    <div class="galeria">
+      @for (foto of fotos(); track foto.id) {
+        <figure>
+          <img [src]="foto.url" [alt]="foto.descripcion" loading="lazy">
+          <figcaption>{{ foto.titulo }} · Imagen de referencia</figcaption>
+        </figure>
+      }
+    </div>
+  </section>
+
+  <section class="bloque" id="precios">
+    <h2>Precios</h2>
+    <ul class="lista-precios">
+      @for (producto of productos(); track producto.id) {
+        <li>
+          <span>{{ producto.nombre }}</span>
+          <strong class="precio">Bs {{ producto.precio }}</strong>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="bloque" id="contacto">
+    <h2>Contacto</h2>
+    <form class="formulario" #contacto="ngForm" (ngSubmit)="enviarContacto(contacto)">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" name="nombre" ngModel required maxlength="100" autocomplete="name">
+
+      <label for="correo">Correo electrónico</label>
+      <input id="correo" name="correo" type="email" ngModel email required
+        maxlength="254" autocomplete="email">
+
+      <label for="mensaje">Mensaje</label>
+      <textarea id="mensaje" name="mensaje" ngModel required maxlength="1000" rows="5"></textarea>
+
+      <button class="boton" type="submit" [disabled]="contacto.invalid || enviandoContacto()">
+        {{ enviandoContacto() ? 'Enviando…' : 'Enviar mensaje' }}
+      </button>
+      <p role="status">{{ estadoContacto() }}</p>
+    </form>
+  </section>
+</main>
+
+<details class="chat">
+  <summary>Chat CoffeeHouse</summary>
+  <div class="chat-contenido">
+    <div class="chat-mensajes" role="log" aria-label="Conversación">
+      @for (mensaje of chat(); track $index) {
+        <p class="burbuja"><strong>{{ mensaje.autor }}</strong> {{ mensaje.texto }}</p>
+      }
+    </div>
+    @if (esperandoChat()) {
+      <p role="status">Consultando…</p>
+    }
+    @if (errorChat()) {
+      <p role="alert">{{ errorChat() }}</p>
+    }
+    <form class="formulario" #consulta="ngForm" (ngSubmit)="enviarPregunta(consulta)">
+      <label for="pregunta">Pregunta sobre la cafetería</label>
+      <input id="pregunta" name="pregunta" ngModel required maxlength="500">
+      <button class="boton" type="submit" [disabled]="consulta.invalid || esperandoChat()">
+        Enviar pregunta
+      </button>
+    </form>
+  </div>
+</details>
