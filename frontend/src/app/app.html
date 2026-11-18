@@ -172,6 +172,21 @@
   </section>
 </main>
 
+<footer class="pie">
+  <a class="marca" href="#inicio" aria-label="Volver al inicio">
+    <span>CH</span>
+    {{ cafeteria()?.nombre }}
+  </a>
+  <p>Un buen café siempre encuentra su momento.</p>
+  <nav aria-label="Navegación del pie de página">
+    <a href="#especialidades">Especialidades</a>
+    <a href="#menu">Menú</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <small>© {{ cafeteria()?.nombre }} · {{ cafeteria()?.ciudad }}</small>
+</footer>
+
 <aside class="chatbot" [class.chatbot-abierto]="chatAbierto()">
   <button class="chatbot-lanzador" type="button"
     (click)="alternarChat()" [attr.aria-expanded]="chatAbierto()"
