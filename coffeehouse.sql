@@ -64,11 +64,41 @@ INSERT IGNORE INTO servicios (id, nombre, descripcion) VALUES
 INSERT IGNORE INTO productos
   (id, nombre, descripcion, precio, especialidad)
 VALUES
-  (1, 'Cappuccino de la casa', 'Espresso con leche y espuma cremosa.', 18.00, 1),
-  (2, 'Mocaccino', 'Espresso con leche y chocolate.', 22.00, 1),
-  (3, 'Espresso', 'Una porción de café concentrado.', 12.00, 0),
-  (4, 'Croissant de mantequilla', 'Hojaldre dorado y crujiente.', 14.00, 0),
-  (5, 'Brownie de chocolate', 'Porción de brownie de chocolate.', 16.00, 0);
+  (1, 'Cappuccino', 'Espresso con leche vaporizada y espuma cremosa.', 20.00, 1),
+  (2, 'Latte', 'Espresso suave con abundante leche y una ligera capa de espuma.', 22.00, 1),
+  (3, 'Espresso', 'Una pequeña y concentrada extracción de café boliviano.', 12.00, 0),
+  (4, 'Americano', 'Espresso diluido en agua caliente para una taza suave.', 15.00, 0),
+  (5, 'Mocaccino', 'Espresso con chocolate caliente y leche cremosa.', 24.00, 1),
+  (6, 'Cortado', 'Espresso con una proporción equilibrada de leche caliente.', 17.00, 0),
+  (7, 'Flat White', 'Doble espresso con leche sedosa y textura fina.', 23.00, 1),
+  (8, 'Café Caranavi', 'Café filtrado preparado con origen Caranavi, La Paz.', 19.00, 1),
+  (9, 'Café Prensa Francesa', 'Preparación aromática de cafetera prensa francesa.', 21.00, 0),
+  (10, 'Café Senda del Inca', 'Café filtrado con notas equilibradas y tostado medio.', 18.00, 0),
+  (11, 'Cold Brew', 'Café extraído lentamente en frío y servido con hielo.', 25.00, 1),
+  (12, 'Affogato', 'Scoop de helado servido con un espresso caliente.', 28.00, 1),
+  (13, 'Carajillo', 'Espresso con licor, servido como una bebida intensa.', 27.00, 0);
+
+INSERT INTO productos
+  (id, nombre, descripcion, precio, especialidad)
+VALUES
+  (1, 'Cappuccino', 'Espresso con leche vaporizada y espuma cremosa.', 20.00, 1),
+  (2, 'Latte', 'Espresso suave con abundante leche y una ligera capa de espuma.', 22.00, 1),
+  (3, 'Espresso', 'Una pequeña y concentrada extracción de café boliviano.', 12.00, 0),
+  (4, 'Americano', 'Espresso diluido en agua caliente para una taza suave.', 15.00, 0),
+  (5, 'Mocaccino', 'Espresso con chocolate caliente y leche cremosa.', 24.00, 1),
+  (6, 'Cortado', 'Espresso con una proporción equilibrada de leche caliente.', 17.00, 0),
+  (7, 'Flat White', 'Doble espresso con leche sedosa y textura fina.', 23.00, 1),
+  (8, 'Café Caranavi', 'Café filtrado preparado con origen Caranavi, La Paz.', 19.00, 1),
+  (9, 'Café Prensa Francesa', 'Preparación aromática de cafetera prensa francesa.', 21.00, 0),
+  (10, 'Café Senda del Inca', 'Café filtrado con notas equilibradas y tostado medio.', 18.00, 0),
+  (11, 'Cold Brew', 'Café extraído lentamente en frío y servido con hielo.', 25.00, 1),
+  (12, 'Affogato', 'Scoop de helado servido con un espresso caliente.', 28.00, 1),
+  (13, 'Carajillo', 'Espresso con licor, servido como una bebida intensa.', 27.00, 0)
+ON DUPLICATE KEY UPDATE
+  nombre = VALUES(nombre),
+  descripcion = VALUES(descripcion),
+  precio = VALUES(precio),
+  especialidad = VALUES(especialidad);
 
 INSERT IGNORE INTO multimedia
   (id, tipo, titulo, descripcion, url, poster, fuente_url)
@@ -84,4 +114,15 @@ VALUES
   (3, 'foto', 'Barra de café',
    'Imagen de referencia de una barra de madera.',
    '/api/media/local-2.jpg', NULL,
-   'https://www.pexels.com/photo/modern-cozy-coffee-shop-interior-with-bar-stools-33386568/');
+   'https://www.pexels.com/photo/modern-cozy-coffee-shop-interior-with-bar-stools-33386568/'),
+  (4, 'video', 'Preparación artesanal en Chemex',
+   'Una toma distinta de café filtrado preparado cuidadosamente en Chemex.',
+   '/api/media/cafe-pour-over.mp4', '/api/media/cafe-pour-over.jpg',
+   'https://www.pexels.com/video/artisan-pour-over-coffee-brewing-techniques-40047520/')
+ON DUPLICATE KEY UPDATE
+  tipo = VALUES(tipo),
+  titulo = VALUES(titulo),
+  descripcion = VALUES(descripcion),
+  url = VALUES(url),
+  poster = VALUES(poster),
+  fuente_url = VALUES(fuente_url);

@@ -53,7 +53,9 @@ export class App implements OnInit {
   readonly multimedia = signal<Multimedia[]>([]);
   readonly errores = signal<string[]>([]);
 
-  readonly portada = computed(() => this.multimedia().find((medio) => medio.tipo === 'video'));
+  readonly portada = computed(() =>
+    this.multimedia().filter((medio) => medio.tipo === 'video').slice(-1)[0],
+  );
   readonly fotos = computed(() => this.multimedia().filter((medio) => medio.tipo === 'foto'));
   readonly especialidades = computed(() =>
     this.productos().filter((producto) => producto.especialidad === 1),
@@ -68,6 +70,7 @@ export class App implements OnInit {
   readonly esperandoChat = signal(false);
   readonly errorChat = signal('');
   readonly chat = signal<MensajeChat[]>([]);
+  readonly chatAbierto = signal(false);
 
   ngOnInit(): void {
     this.cargar('cafeteria', this.cafeteria, 'los datos de la cafetería');
@@ -113,11 +116,28 @@ export class App implements OnInit {
   enviarPregunta(formulario: NgForm): void {
     const prompt = String(formulario.value.pregunta ?? '').trim();
     if (!prompt || formulario.invalid || this.esperandoChat()) return;
+    formulario.resetForm();
+    this.enviarConsulta(prompt);
+  }
 
+  enviarSugerencia(prompt: string): void {
+    if (this.esperandoChat()) return;
+    this.enviarConsulta(prompt);
+  }
+
+  alternarChat(): void {
+    this.chatAbierto.update((abierto) => !abierto);
+  }
+
+  reiniciarChat(): void {
+    this.chat.set([]);
+    this.errorChat.set('');
+  }
+
+  private enviarConsulta(prompt: string): void {
     this.chat.update((mensajes) => [...mensajes, { autor: 'Tú', texto: prompt }]);
     this.errorChat.set('');
     this.esperandoChat.set(true);
-    formulario.resetForm();
 
     this.http.post<{ response: string }>('/api/chatbot', { prompt })
       .pipe(finalize(() => this.esperandoChat.set(false)))
